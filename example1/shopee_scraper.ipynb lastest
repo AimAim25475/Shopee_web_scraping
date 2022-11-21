@@ -1,0 +1,354 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "checkpoint 1 เอาคำสั่งทำงานเดิมมา"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from selenium import webdriver\n",
+    "from selenium.webdriver.common.keys import Keys\n",
+    "\n",
+    "def prepare_shopee():\n",
+    "    driver = webdriver.Chrome(executable_path=r'C:\\Users\\acer\\Desktop\\bootcamp 24 class 6\\chromedriver')\n",
+    "    driver.get('https://shopee.co.th/')\n",
+    "    thai_button = driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/div/div[3]/div[1]/button')\n",
+    "    thai_button.click()\n",
+    "    close_popup = driver.execute_script('return document.querySelector(\"shopee-banner-popup-stateful\").shadowRoot.querySelector(\"div.shopee-popup__close-btn\")')\n",
+    "    close_popup.click()\n",
+    "    return driver\n",
+    "\n",
+    "def prepare_data(driver):\n",
+    "    search_bar = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[2]/div/div[1]/div[1]/div/form/input')\n",
+    "    search_bar.click()\n",
+    "    search_bar.send_keys('เก้าอี้ ergonomic')\n",
+    "    search_bar.send_keys(Keys.ENTER)\n",
+    "    driver.execute_script('document.body.style.zoom=\"10%\"')\n",
+    "    return driver"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "driver = prepare_shopee()\n",
+    "driver = prepare_data(driver)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "checkpoint 2 การใช้เปลี่ยนจากการใช้ค่า เป็นตัวแปรเพื่อทำ user input"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from selenium import webdriver\n",
+    "from selenium.webdriver.common.keys import Keys\n",
+    "\n",
+    "def prepare_shopee(chromedriver_path):\n",
+    "    driver = webdriver.Chrome(executable_path=chromedriver_path)\n",
+    "    driver.get('https://shopee.co.th/')\n",
+    "    thai_button = driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/div/div[3]/div[1]/button')\n",
+    "    thai_button.click()\n",
+    "    close_popup = driver.execute_script('return document.querySelector(\"shopee-banner-popup-stateful\").shadowRoot.querySelector(\"div.shopee-popup__close-btn\")')\n",
+    "    close_popup.click()\n",
+    "    return driver\n",
+    "\n",
+    "def prepare_data(driver,keyword):\n",
+    "    search_bar = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[2]/div/div[1]/div[1]/div/form/input')\n",
+    "    search_bar.click()\n",
+    "    search_bar.send_keys(keyword)\n",
+    "    search_bar.send_keys(Keys.ENTER)\n",
+    "    driver.execute_script('document.body.style.zoom=\"10%\"')\n",
+    "    return driver"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "checkpoint 3 การใช้ pyautogui รับค่า user input"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pyautogui"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'โต๊ะปรับระดับไฟฟ้า'"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "keyword = pyautogui.prompt(text='ใส่ keyword ที่ต้องการค้นหา',title='shopee_scraper')\n",
+    "keyword"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'C:\\\\Users\\\\acer\\\\Desktop\\\\bootcamp 24 class 6\\\\chromedriver.exe'"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "chromedriver_path = pyautogui.prompt(text='ใส่ที่อยู่ของไฟล์ chromedriver.exe',title='shopee_scraper')\n",
+    "chromedriver_path"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "driver = prepare_shopee(chromedriver_path)\n",
+    "driver = prepare_data(driver,keyword)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "checkpoint 4 การดึงข้อมูลลงตาราง ปรับ tag ใหม่"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div><div id=c13b8b50-5e4f-4b51-9880-d8fa3634df72 style=\"display:none; background-color:#9D6CFF; color:white; width:200px; height:30px; padding-left:5px; border-radius:4px; flex-direction:row; justify-content:space-around; align-items:center;\" onmouseover=\"this.style.backgroundColor='#BA9BF8'\" onmouseout=\"this.style.backgroundColor='#9D6CFF'\" onclick=\"window.commands?.execute('create-mitosheet-from-dataframe-output');\">See Full Dataframe in Mito</div> <script> if (window.commands.hasCommand('create-mitosheet-from-dataframe-output')) document.getElementById('c13b8b50-5e4f-4b51-9880-d8fa3634df72').style.display = 'flex' </script> <table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>0</th>\n",
+       "      <th>1</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>[ส่งฟรี รับประกัน3ปี] เก้าอี้ทำงานเพื่อสุขภาพ DreamDesk Ergonomic Chair รุ่น Sync ปรับเบาะให้สอดคล้องกับการเอนอัตโนมัติ</td>\n",
+       "      <td>฿12,900฿9,700</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>เก้าอี้เพื่อสุขภาพ รุ่น BIONIC  เก้าอี้ เก้าอี้ทำงาน เก้าอี้นั่งทำงาน เก้าอี้ออฟฟิศ เก้าอี้ผู้บริหาร ERGONOMIC</td>\n",
+       "      <td>฿9,990฿4,990</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>[Best Seller] Bewell Ergonomic chair เก้าอี้ทำงานเพื่อสุขภาพ ปรับระดับได้ทุกส่วน มีที่รองรับศรีษะ รุ่น Embrace</td>\n",
+       "      <td>฿29,900฿19,900</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>[New!] Bewell เก้าอี้ทำงานเพื่อสุขภาพ รุ่น FOSTER ปรับเอนพนักพิงได้ตั้งแต่ 90 - 108 องศา และล็อคองศาที่ต้งอการ Lumbar Support ที่วางแขนแบบ 3D</td>\n",
+       "      <td>฿15,900฿7,900</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>[ส่งฟรี รับประกัน3ปี ผ่อน0%] ERGONOMATE เก้าอี้ทำงาน เก้าอี้เพื่อสุขภาพ รุ่น Lincoln ที่พักแขน ปรับ 3 ทิศทาง เบาะผ้า สไลด์เข้า-ออกได้ ล็อคเอน 4 ตำแหน่ง 100-123° Lumbar Support เก้าอี้สำนักงาน เก้าอี้คอม President 3D Ergo Chair HomeHuk</td>\n",
+       "      <td>฿11,900฿7,190</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>55</th>\n",
+       "      <td>เซตคู่เพื่อสุขภาพ FULI X8 ErgoChair Pro Series - White ขาว</td>\n",
+       "      <td>฿6,698฿4,699</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>56</th>\n",
+       "      <td>[ส่งฟรี คืน299c. ทักแชท] Fennix Ergonomic  Chair HC-6H01 เก้าอี้ทำงานเพื่อสุขภาพ เก้าอี้สำนักงาน ปรับเอนได้ 135 องศา</td>\n",
+       "      <td>฿3,990฿2,790</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>57</th>\n",
+       "      <td>Xiaomi youpin YM Ergonomic Office Chair เก้าอี้ทำงาน รุ่นตาข่ายระบาย พนักพิงหลัง ปรับระดับ เก้าอี้ทำงาน เก้าอี้ออฟฟิศ</td>\n",
+       "      <td>฿7,599 - ฿8,499</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>58</th>\n",
+       "      <td>[ส่งฟรี ผ่อน0%] ERGONOMATE เก้าอี้สำนักงาน เก้าอี้เพื่อสุขภาพ รุ่น Roosevelt เบาะผ้า สไลด์เข้า-ออกได้ พนักพิงเอน 102-123° ล็อคได้ ที่พักแขน ปรับ 4 ทิศทาง Lumbar Support เก้าอี้ทำงาน เก้าอี้ออฟฟิศ เก้าอี้ผู้บริหาร Executive 4D Ergo Chair</td>\n",
+       "      <td>฿15,900฿9,890</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>59</th>\n",
+       "      <td>เซตคู่เพื่อสุขภาพ FULI X8 ErgoChair Pro Series - Black ดำ</td>\n",
+       "      <td>฿6,698฿4,699</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table></div>"
+      ],
+      "text/plain": [
+       "                                                    0                 1\n",
+       "0   [ส่งฟรี รับประกัน3ปี] เก้าอี้ทำงานเพื่อสุขภาพ ...     ฿12,900฿9,700\n",
+       "1   เก้าอี้เพื่อสุขภาพ รุ่น BIONIC  เก้าอี้ เก้าอี...      ฿9,990฿4,990\n",
+       "2   [Best Seller] Bewell Ergonomic chair เก้าอี้ทำ...    ฿29,900฿19,900\n",
+       "3   [New!] Bewell เก้าอี้ทำงานเพื่อสุขภาพ รุ่น FOS...     ฿15,900฿7,900\n",
+       "4   [ส่งฟรี รับประกัน3ปี ผ่อน0%] ERGONOMATE เก้าอี...     ฿11,900฿7,190\n",
+       "5   InnHome เก้าอี้สำนักงาน เก้าอี้ทำงาน Ergonomic...      ฿3,990฿1,469\n",
+       "6   เก้าอี้เพื่อสุขภาพ รุ่น BIONIC  เก้าอี้ เก้าอี...      ฿9,990฿4,990\n",
+       "7   [ส่งฟรี รับประกัน3ปี] เก้าอี้ทำงานเพื่อสุขภาพ ...     ฿12,900฿9,700\n",
+       "8   Bewell Ergonomic chair เก้าอี้ทำงานเพื่อสุขภาพ...    ฿25,900฿15,900\n",
+       "9   [ส่งฟรี + ราคาพิเศษ🔥] ทักแชทรับโค้ดลดเพิ่ม เช็...    ฿77,400฿58,200\n",
+       "10  Elife เก้าอี้ทำงาน Ergonomic chair เก้าอี้สำนั...      ฿6,990฿3,190\n",
+       "11  Autofull gaming chair (G7_138) รุ่นAF075 เบาะห...     ฿10,500฿8,500\n",
+       "12  Autofull gaming chair (G7_136) รุ่นAF802 เบาะห...      ฿9,900฿8,990\n",
+       "13  เก้าอี้ทำงาน มี 2 รุ่นให้เลือก Ergonomic chair...      ฿8,960฿2,999\n",
+       "14  LVNI office chair เก้าอี้ทำงาน เก้าอี้เพื่อสุข...      ฿3,990฿2,699\n",
+       "15  【ส่วนลด 50%】♦☎✥Ergonomic chair  เก้าอี้หนังสไต...   ฿1,323 - ฿1,404\n",
+       "16  [พร้อมส่ง ราคาสุดพิเศษ] Ergonomic Chair เยอรมั...     ฿12,000฿5,699\n",
+       "17  Fennix Ergonomic Chair HC-6H01 เก้าอี้ทำงานเพื...      ฿3,990฿2,790\n",
+       "18  เก้าอี้เพื่อสุขภาพ นั่งสบาย ThunderX3 YAMA1 ER...      ฿5,190฿5,139\n",
+       "19  Xiaomi Yuemi YM Ergonomic Office Chair เก้าอี้...   ฿7,599 - ฿8,499\n",
+       "20  【ส่วนลด 50%】✹๑Ergonomic chair  เก้าอี้หนังสไตล...   ฿1,309 - ฿1,387\n",
+       "21  [คืน 334c. ทักแชทรับโค้ด] Fennix Ergonomic  Ch...   ฿2,790 - ฿2,990\n",
+       "22  Fennix Ergonomic Chair HC-6H01 เก้าอี้ทำงานเพื...      ฿3,990฿2,790\n",
+       "23  Autofull gaming chair (G7_137) รุ่นAF077 เบาะห...     ฿10,900฿9,500\n",
+       "24  Fennix Ergonomic Chair HC-6H01 เก้าอี้ทำงานเพื...            ฿2,790\n",
+       "25  Autofull Gaming Chair + Ergonomic เก้าอี้เกมมิ...           ฿15,900\n",
+       "26  (ชิ้นใหญ่ สั่งครั้งละ1 ตัว)Ergonomic chair  เก...              ฿595\n",
+       "27  InnHome เก้าอี้สำนักงาน เก้าอี้ทำงาน Ergonomic...      ฿4,950฿1,990\n",
+       "28  [พร้อมจัดส่ง] Modena ที่พักเท้าเพื่อสุขภาพ | E...        ฿1,590฿990\n",
+       "29  Xiaomi YM ERGONOMIC Office Chair เก้าอี้ทำงาน ...   ฿7,599 - ฿8,499\n",
+       "30       เก้าอี้ Ergonomic ยี่ห้อ Dreamdesk Mesh-gray            ฿8,500\n",
+       "31  Xiaomi youpin YM Ergonomic Office Chair เก้าอี...   ฿7,599 - ฿8,499\n",
+       "32  InnHome เก้าอี้สำนักงาน เก้าอี้ทำงาน Ergonomic...      ฿4,590฿1,999\n",
+       "33  เก้าอี้CHAIR THUNDER X3 YAMA1 ERGONOMIC (Black...            ฿4,990\n",
+       "34  LVNI Ergonomic Chair  เก้าอี้สำนักงาน เก้าอี้ค...    ฿27,999฿23,999\n",
+       "35  SIHOO M76 Ergonomic office chair - เก้าอี้ เก้...            ฿2,490\n",
+       "36  เก้าอี้ทำงาน เก้าอี้สำนักงาน นุ่มสบาย เก้าอี้o...            ฿1,699\n",
+       "37  Autofull  Gaming Chair + Ergonomic เก้าอี้เกมม...            ฿8,590\n",
+       "38  【ส่วนลด 50%】☒✷Ergonomic chair  เก้าอี้หนังสไตล...   ฿1,324 - ฿1,403\n",
+       "39  PANDO Ergonomic Chair Extreme Collection เก้าอ...      ฿5,590฿5,290\n",
+       "40  Xiaomi Yuemi YM Ergonomic Office Chair เก้าอี้...   ฿7,599 - ฿8,499\n",
+       "41  เก้าอี้พนักงาน เก้าอี้สำนักงาน เก้าอี้เล่นเกม ...            ฿4,715\n",
+       "42  [Best Seller] Bewell Ergonomic chair เก้าอี้ทำ...    ฿29,900฿19,900\n",
+       "43  【ส่วนลด 50%】❡♟Ergonomic chair  เก้าอี้หนังสไตล...   ฿1,322 - ฿1,400\n",
+       "44  coffee chair Xiaomi Chair Xiaomi Hbada Office ...   ฿1,259 - ฿6,295\n",
+       "45  THUNDER X3 YAMA1 ERGONOMIC (Black/Red) Gaming ...            ฿4,790\n",
+       "46  เก้าอี้ เพื่อสุขภาพ Xiaomi Yuemi YM 8H Ergonom...  ฿6,306 - ฿10,713\n",
+       "47  InnHome เก้าอี้ เก้าอี้สำนักงาน เก้าอี้ทำงาน  ...        ฿1,690฿690\n",
+       "48  Autofull Ergonomic รุ่นAF077 (G7_137) เก้าอี้เ...     ฿10,900฿9,500\n",
+       "49  GOODprettyComputer Chair Home Office Chair Erg...      ฿5,977฿3,586\n",
+       "50  【พร้อมส่ง】◑Ergonomic chair  เก้าอี้หนังสไตล์นอ...   ฿1,327 - ฿1,406\n",
+       "51  ที่วางเท้า ที่พักเท้า ปรับความสูงได้ Ergonomic...              ฿490\n",
+       "52  Autofull  Gaming Chair + Ergonomic เก้าอี้เกมม...           ฿13,900\n",
+       "53  Fennix Ergonomic  Chair HC-6H01 เก้าอี้ทำงานเพ...      ฿3,990฿2,790\n",
+       "54  [global]Ergonomic Office Computer Game Chair S...          ฿504฿252\n",
+       "55  เซตคู่เพื่อสุขภาพ FULI X8 ErgoChair Pro Series...      ฿6,698฿4,699\n",
+       "56  [ส่งฟรี คืน299c. ทักแชท] Fennix Ergonomic  Cha...      ฿3,990฿2,790\n",
+       "57  Xiaomi youpin YM Ergonomic Office Chair เก้าอี...   ฿7,599 - ฿8,499\n",
+       "58  [ส่งฟรี ผ่อน0%] ERGONOMATE เก้าอี้สำนักงาน เก้...     ฿15,900฿9,890\n",
+       "59  เซตคู่เพื่อสุขภาพ FULI X8 ErgoChair Pro Series...      ฿6,698฿4,699"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import bs4\n",
+    "import time\n",
+    "\n",
+    "time.sleep(2)\n",
+    "html_string = driver.page_source\n",
+    "\n",
+    "soup = bs4.BeautifulSoup(html_string)\n",
+    "all_listing = soup.find_all('div',{'data-sqe':'item'})\n",
+    "\n",
+    "name_list = []\n",
+    "price_list = []\n",
+    "for listing in all_listing:\n",
+    "\n",
+    "    name = listing.find('div',{'class':'ie3A+n bM+7UW Cve6sh'}).text\n",
+    "    price = listing.find('div',{'class':'hpDKMN'}).text\n",
+    "    \n",
+    "    name_list.append(name)\n",
+    "    price_list.append(price)\n",
+    "    \n",
+    "    \n",
+    "pd.DataFrame([name_list,price_list]).transpose()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
